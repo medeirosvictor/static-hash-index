@@ -1,64 +1,28 @@
-import React, { Component } from 'react';
+import React, { useReducer } from 'react';
+import { Router } from "@reach/router"
 import './static/css/index.css';
+import InitForm from './components/InitForm'
+import Simulation from './components/Simulation'
+import SimulationContext from './components/contexts/SimulationContext'
+import InitState from './components/helpers/InitState'
+import simulationDataReducer from './components/reducers/simulationDataReducer'
 
-class App extends Component {
-  // Initialize state
-  state = { passwords: [] }
+function App() {
+  const [state, dispatch] = useReducer(simulationDataReducer, InitState)
 
-  // Fetch passwords after first mount
-  componentDidMount() {
-    this.getPasswords();
-  }
-
-  getPasswords = () => {
-    // Get the passwords and store them in state
-    fetch('/api/passwords')
-      .then(res => res.json())
-      .then(passwords => this.setState({ passwords }));
-  }
-
-  render() {
-    const { passwords } = this.state;
-
-    return (
+  return (
+    <SimulationContext.Provider value={{state, dispatch}}>
       <div className="App">
-        {/* Render the passwords if we have them */}
-        {passwords.length ? (
-          <div>
-            <h1>5 Passwords.</h1>
-            <ul className="passwords">
-              {/*
-                Generally it's bad to use "index" as a key.
-                It's ok for this example because there will always
-                be the same number of passwords, and they never
-                change positions in the array.
-              */}
-              {passwords.map((password, index) =>
-                <li key={index}>
-                  {password}
-                </li>
-              )}
-            </ul>
-            <button
-              className="more"
-              onClick={this.getPasswords}>
-              Get More
-            </button>
-          </div>
-        ) : (
-          // Render a helpful message otherwise
-          <div>
-            <h1>No passwords :(</h1>
-            <button
-              className="more"
-              onClick={this.getPasswords}>
-              Try Again?
-            </button>
-          </div>
-        )}
+          <h1 className="header">
+              Static Index Hash Simulator
+          </h1>
+          <Router>
+              <InitForm path="/" />
+              <Simulation path="/simulation"/>
+          </Router>
       </div>
-    );
-  }
+    </SimulationContext.Provider>
+  );
 }
 
 export default App;

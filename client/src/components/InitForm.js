@@ -13,15 +13,15 @@ const InitForm = () => {
         console.time("building tables");
         mountTable()
         console.timeEnd("building tables");
-        console.time("building pages");
-        mountPages()
-        console.timeEnd("building pages");
-        console.time("building buckets");
-        setBucketData()
-        mountBuckets()
-        console.timeEnd("building buckets");
+        // console.time("building pages");
+        // mountPages()
+        // console.timeEnd("building pages");
+        // console.time("building buckets");
+        // setBucketData()
+        // mountBuckets()
+        // console.timeEnd("building buckets");
         dispatch({type: 'UPDATE_SIMDATA', payload: {meta: {...state.meta, isRunning: true}}})
-        navigate("/simulation")
+        // navigate("/simulation")
     }
 
     const handlePageSettings = (e) => {
@@ -38,36 +38,13 @@ const InitForm = () => {
     const mountTable = () => {
         console.log("Mounting tables...")
         let rows = []
-        let randomListSearchKeyIds = []
-        let fileContent = state.meta.fileContent
-        let fileContentArray = fileContent.split("\n")
-
-        for (let i = 0; i < fileContentArray.length; i++) {
-            randomListSearchKeyIds.push(i)
-        }
-
-        shuffleArray(randomListSearchKeyIds)
-
-        fileContentArray.forEach((word, index) => {
-            
-            let rand = Math.floor(Math.random()*randomListSearchKeyIds.length)
-            let id = randomListSearchKeyIds[rand]
-            randomListSearchKeyIds.splice(rand, 1)
-            rows.push({id, word})
-        })
-
-        dispatch({type: 'UPDATE_SIMDATA', payload:
-            {
-                table: {
-                    ...state.table,
-                    content: rows,
-                    meta: {
-                        rowCount: rows.length,
-                        columns: ["id", "word"]
-                    }
+        fetch('/api/simulation/table')
+            .then((table) => {
+                if (table)  {
+                    console.log(table)
                 }
-            }
-        })
+                return table
+            })
 
         console.log("Tables Finished")
     }

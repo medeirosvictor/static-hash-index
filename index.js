@@ -1,25 +1,27 @@
-const express = require('express');
-const path = require('path');
-const generatePassword = require('password-generator');
+const express = require('express')
+const path = require('path')
+const fs = require('fs')
+const generatePassword = require('password-generator')
+const helpers = require("./helpers")
+const initialState = require("./initialState")
+const cors = require('cors')
 
 const app = express();
-
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(cors())
+
+const fileContent = fs.readFileSync("words.txt","utf8")
+const fileContentArray = fileContent.split("\n")
+
+let simulationData = initialState
+
+simulationData = helpers.mountTables(simulationData, fileContentArray)
 
 // Put all API endpoints under '/api'
-app.get('/api/passwords', (req, res) => {
-    const count = 5;
-    
-    // Generate some passwords
-    const passwords = Array.from(Array(count).keys()).map(i =>
-        generatePassword(12, false)
-        )
-        
-        // Return them as json
-        res.json(passwords);
-        
-        console.log(`Sent ${count} passwords`);
+app.get('/api/simulation/table', (req, res) => {
+    res.send(simulationData.table)
+    console.log(`Simulation Data sent`);
 });
     
 // The "catchall" handler: for any request that doesn't
@@ -31,4 +33,4 @@ app.get('*', (req, res) => {
 const port = process.env.PORT || 5000;
 app.listen(port);
 
-console.log(`Password generator listening on ${port}`);
+console.log(`Simulation Data API listening on ${port}`);
