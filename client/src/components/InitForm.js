@@ -39,13 +39,16 @@ const InitForm = () => {
         console.log("Mounting tables...")
         let rows = []
         fetch('/api/simulation/table')
-            .then((table) => {
-                if (table)  {
-                    console.log(table)
-                }
-                return table
+            .then(response => {
+                response.json().then(body => {
+                    if (response.status === 200) {
+                        console.log(body)
+                        return body
+                    } else {
+                        throw body
+                    }
+                })
             })
-
         console.log("Tables Finished")
     }
 

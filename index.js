@@ -14,11 +14,11 @@ app.use(cors())
 const fileContent = fs.readFileSync("words.txt","utf8")
 const fileContentArray = fileContent.split("\n")
 
+let simulationData = initialState
+simulationData = helpers.mountTables(simulationData, fileContentArray)
+
 // Put all API endpoints under '/api'
 app.get('/api/simulation/table', (req, res) => {
-    let simulationData = initialState
-    simulationData = helpers.mountTables(simulationData, fileContentArray)
-
     res.send(simulationData.table)
     console.log(`Simulation Data sent`);
 });
