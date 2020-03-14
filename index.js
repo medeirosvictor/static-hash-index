@@ -11,8 +11,14 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(cors())
 
+const fileContent = fs.readFileSync("words.txt","utf8")
+const fileContentArray = fileContent.split("\n")
+
 // Put all API endpoints under '/api'
 app.get('/api/simulation/table', (req, res) => {
+    let simulationData = initialState
+    simulationData = helpers.mountTables(simulationData, fileContentArray)
+
     res.send(simulationData.table)
     console.log(`Simulation Data sent`);
 });
@@ -25,13 +31,5 @@ app.get('*', (req, res) => {
 
 const port = process.env.PORT || 5000;
 app.listen(port);
-
-const fileContent = fs.readFileSync("words.txt","utf8")
-const fileContentArray = fileContent.split("\n")
-
-let simulationData = initialState
-
-simulationData = helpers.mountTables(simulationData, fileContentArray)
-
 
 console.log(`Simulation Data API listening on ${port}`);
