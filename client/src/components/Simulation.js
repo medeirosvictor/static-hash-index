@@ -19,9 +19,8 @@ const Simulation = () => {
                 <SimulationInfo />
                 <SearchForm/>
                 <div className="simulation-core">
-                    <Table />
-                    {/* <PageList />
-                    <BucketList /> */}
+                    <PageList />
+                    <BucketList />
                 </div>
             </div>
         )

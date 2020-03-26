@@ -1,44 +1,22 @@
-import React, { useContext } from 'react'
-import SimulationContext from './contexts/SimulationContext'
+import React from 'react'
 import { List } from "react-virtualized";
 
-const Table = () => {
-    const { state } = useContext(SimulationContext)
-    const table = state.table
-    const tableContent = table.content
-
-    // const rows = table.content.map((row, index) => {
-    //     const { id, word } = row
-
-    //     return (
-    //         <div className="table-row" key={index}>
-    //             <div className="table-cell">
-    //                 {id}
-    //             </div>
-    //             <div className="table-cell">
-    //                 {word}
-    //             </div>
-    //         </div>
-    //     )
-    // })
-
+const Table = ({table}) => {
     const renderRow = ({ index, key, style }) => {
         return (
             <div className="table-row" key={key} style={style}>
                 <div className="table-cell">
-                    {tableContent[index].id}
+                    {table[index].id}
                 </div>
                 <div className="table-cell">
-                    {tableContent[index].word}
+                    {table[index].word}
                 </div>
             </div>
         )
     }
 
-
-    return (
-        <div>
-            <div className="table-content">
+        return (
+            <div className="table-container">
                 <div className="table-header bold">
                     <div className="table-cell">
                         id
@@ -48,16 +26,15 @@ const Table = () => {
                     </div>
                 </div>
                 <List
-                    className="List"
-                    width={600}
-                    height={600}
+                    className="table-content"
+                    width={800}
+                    height={700}
                     rowHeight={30}
                     rowRenderer={renderRow}
-                    rowCount={tableContent.length}
+                    rowCount={table ? table.length : 0}
                 />
             </div>
-        </div>
-    )
+        )
 }
 
 export default Table

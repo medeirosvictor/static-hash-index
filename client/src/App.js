@@ -8,21 +8,21 @@ import InitState from './components/helpers/InitState'
 import simulationDataReducer from './components/reducers/simulationDataReducer'
 
 function App() {
-  const [state, dispatch] = useReducer(simulationDataReducer, InitState)
+    const [state, dispatch] = useReducer(simulationDataReducer, InitState)
 
-  return (
-    <SimulationContext.Provider value={{state, dispatch}}>
-      <div className="App">
-          <h1 className="header">
-              Static Index Hash Simulator
-          </h1>
-          <Router>
-              <InitForm path="/" />
-              <Simulation path="/simulation"/>
-          </Router>
-      </div>
-    </SimulationContext.Provider>
-  );
+    return (
+      <SimulationContext.Provider value={{state, dispatch}}>
+        <div className="App">
+            <h1 className="header">
+                Static Index Hash Simulator
+            </h1>
+            <Router>
+                <InitForm path="/" />
+                <Simulation path="/simulation"/>
+            </Router>
+        </div>
+      </SimulationContext.Provider>
+    );
 }
 
 export default App;

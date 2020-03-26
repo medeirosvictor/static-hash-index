@@ -38,6 +38,12 @@ html, body {
         background-color: #fff;
     }
 
+    &-tuples-container {
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
     &-content {
         max-width: 350px;
         width: 50%;
@@ -108,7 +114,7 @@ html, body {
 .table {
     &-container {
         max-width: 800px;
-        margin: 0 auto;
+        margin: 40px auto;
         box-shadow: $box-shadow-default;
         background-color: #fff;
     }
@@ -138,13 +144,19 @@ html, body {
     }
 }
 
+.hash-tuples-container {
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .page-tuple,
 .hash-tuple {
     display: flex;
     text-align: center;
     font-size: 14px;
     border-bottom: 1px solid gray;
-    padding: 3px;
+    line-height: 25px;
 
     &:last-child {
         border: none

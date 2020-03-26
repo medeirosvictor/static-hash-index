@@ -29,6 +29,11 @@ html, body {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   background-color: #fff; }
 
+.page-tuples-container {
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap; }
+
 .page-content {
   max-width: 350px;
   width: 50%;
@@ -83,7 +88,7 @@ html, body {
 
 .table-container {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 40px auto;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   background-color: #fff; }
 
@@ -107,13 +112,18 @@ html, body {
   display: flex;
   justify-content: space-evenly; }
 
+.hash-tuples-container {
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap; }
+
 .page-tuple,
 .hash-tuple {
   display: flex;
   text-align: center;
   font-size: 14px;
   border-bottom: 1px solid gray;
-  padding: 3px; }
+  line-height: 25px; }
   .page-tuple:last-child,
   .hash-tuple:last-child {
     border: none; }

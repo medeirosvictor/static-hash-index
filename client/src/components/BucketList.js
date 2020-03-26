@@ -1,29 +1,18 @@
 import React, { useContext } from 'react'
 import SimulationContext from './contexts/SimulationContext'
+import Bucket from './Bucket'
+import BucketOverflow from './BucketOverflow'
 
 const BucketList = () => {
     const { state } = useContext(SimulationContext)
     const { bucketList } = state
-    let overflowBucket
+    let overflowBuckets
 
     const bucketContent = bucketList.map((bucket, index) => {
-        const currentBucket = bucket.hashTable.map((hashTuple) => {
-            return (
-                <div className="hash-tuple">
-                    <div>
-                        { hashTuple.pageId }
-                    </div>
-                    <div>
-                        { hashTuple.tupleId }
-                    </div>
-                </div>
-            )
-        })
-
         bucket.overflowBuckets.forEach((currentOverflowBucket) => {
-            overflowBucket = currentOverflowBucket.hashTable.map((hashTuple) => {
+            overflowBuckets = currentOverflowBucket.hashTable.map((hashTuple) => {
                 return (
-                    <div className="hash-tuple overflow-tuple">
+                    <div className="hash-tuple overflow-tuple" key={index*20}>
                         <div>
                             { hashTuple.pageId }
                         </div>
@@ -48,8 +37,8 @@ const BucketList = () => {
                         Tuple Id
                     </div>
                 </div>
-                { currentBucket }
-                { overflowBucket }
+                <Bucket bucketTuples={bucket.hashTable}/>
+                { overflowBuckets }
             </div>
         )
     })
