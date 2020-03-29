@@ -7,7 +7,7 @@ export default () => {
             let tableContent = state.table.content
             let bucketIds = []
             let bucketSize = 0
-            // tableContent = tableContent.slice(0, 9999)
+            // tableContent = tableContent.slice(0, 14999)
 
             //Hash Function (Java`s Hashcode)
             const hashFunction = (searchKey) => {
@@ -39,6 +39,7 @@ export default () => {
             }
 
             bucketIds = [...new Set(bucketIds)]
+            bucketIds.sort()
 
             bucketSize = Math.ceil(tableContent.length / bucketIds.length)
             const bucketAmount = bucketIds.length
@@ -109,9 +110,10 @@ export default () => {
 
                     //apply hash
                     let currentHashKey = hashFunctionWord(currentTupleWord)
-                    currentHashKey = hashFunction(currentHashKey)
+                    let bucketId = hashFunction(currentHashKey)
+                    bucketId = bucketId === -0 ? 0 : bucketId
 
-                    let currentBucket = bucketList.find((bucket) => { return bucket.id === currentHashKey})
+                    let currentBucket = bucketList.find((bucket) => { return bucket.id === bucketId})
                     if (currentBucket) {
                         if (currentBucket.hashTable.length < bucketSize) {
                             currentBucket.hashTable.push({
@@ -119,6 +121,9 @@ export default () => {
                                 tupleId: currentTupleId
                             })
                         } else {
+                            if (bucketId < 0) {
+                                debugger
+                            }
                             //Overflow case
                             //inside currentBucket find the overflow array if empty create a bucket object inside
                             // if not empty but already full create another bucket inside overflow
@@ -126,24 +131,14 @@ export default () => {
                             if (currentBucket.overflowBuckets.length > 0) {
                                 //there are overflowbuckets
                                 let overflowBucketList = currentBucket.overflowBuckets
-                                let currentOverflowBucket = overflowBucketList.find(overflowBucket => overflowBucket.hashTable.length < bucketSize)
+                                let currentOverflowBucket = overflowBucketList.find((overflowBucket) => {return overflowBucket.hashTable.length < bucketSize})
 
                                 if (currentOverflowBucket) {
                                     currentOverflowBucket.hashTable.push({
                                         pageId: currentPageId,
                                         tupleId: currentTupleId
                                     })
-                                } else {
-                                    currentBucket.overflowBuckets[currentBucket.overflowBuckets.length-1] = []
-                                    currentBucket.overflowBuckets[currentBucket.overflowBuckets.length-1].push({
-                                        id: currentBucket.id,
-                                        hashTable: [{
-                                            pageId: currentPageId,
-                                            tupleId: currentTupleId
-                                        }],
-                                        isOverflowBucket: true
-                                    })
-                                    overflowCounter += 1
+                                    console.log("Old Bucket Same Overflow:" + overflowCounter)
                                 }
                             } else {
                                 //There are no overflowbuckets inside this bucket yet
@@ -157,13 +152,14 @@ export default () => {
                                     isOverflowBucket: true
                                 })
                                 overflowCounter += 1
+                                console.log("New Bucket New Overflow:" + overflowCounter)
                             }
                         }
                     }
                 }
             }
 
-            const overflowRate = (overflowCounter / bucketAmount).toFixed(2)
+            const overflowRate = (overflowCounter / bucketAmount).toFixed(2) * 100 
 
             console.timeEnd("building buckets");
             console.timeEnd("BUILDING SIMULATION");
@@ -177,7 +173,7 @@ export default () => {
                     ...state.meta,
                     bucketAmount: bucketIds.length,
                     bucketSize,
-                    bucketIds: bucketIds.sort(),
+                    bucketIds: bucketIds,
                     totalOverflowAmount: overflowCounter,
                     overflowRate
                 }

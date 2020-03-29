@@ -22,13 +22,10 @@ const SimulationInfo = () => {
                 <span className="bold">Bucket Size (in "hash" tuples): </span> {state.meta.bucketSize}
             </div>
             <div>
-                <span className="bold">Overflow Rate: </span> {state.meta.overflowRate} per Bucket
+                <span className="bold">Overflow Rate: </span> {state.meta.overflowRate}%
             </div>
             <div>
                 <span className="bold">Overflow Amount: </span> {state.meta.totalOverflowAmount}
-            </div>
-            <div>
-                <span className="bold">Hash Function: </span> {state.meta.hashFunction}
             </div>
         </div>
     )

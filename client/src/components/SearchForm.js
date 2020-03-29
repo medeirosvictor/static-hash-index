@@ -7,7 +7,9 @@ function SearchForm (){
     const  bucketList = [...state.bucketList]
     const  pageList  = [...state.pageList]
     const [ searchWord, setSearchWord ] = useState("")
+    const [ notFound, setNotFound ] = useState(false)
     const [ searchObject, setSearchObject ] = useState({})
+    let wordChecker = 0
 
     const hashFunction = (searchKey) => {
         return searchKey % 11;
@@ -32,8 +34,15 @@ function SearchForm (){
     }
 
     function handleSearchFormSubmit(word) {
+        if (wordChecker > 1) {
+            wordChecker = 0
+            setNotFound(true)
+            return
+        }
+
         let searchKey = hashFunctionWord(word)
         let bucketId = hashFunction(searchKey)
+        let isOverflowBucket = false
 
         let bucket = bucketList.filter(bucket => {
             return bucket.id === bucketId
@@ -45,14 +54,16 @@ function SearchForm (){
 
         //Check if inside overflow bucket
         if (!bucketTuple) {
-            let bucketOverflowTupleList = bucket.overflowBuckets.forEach(ovBucket => {
-                ovBucket.hashTable.filter(ovTuple => {
-                    return ovTuple === searchKey
+            for (let i = 0; i < bucket.overflowBuckets.length; i++) {
+                let ovBucketList = bucket.overflowBuckets[i]
+                let ovBucket = ovBucketList.hashTable.filter(ovTuple => {
+                    return ovTuple.tupleId === searchKey
                 })
-            })
 
-            if (bucketOverflowTupleList) {
-                bucketTuple = bucketOverflowTupleList[0]
+                if (ovBucket) {
+                    bucketTuple = ovBucket[0]
+                    isOverflowBucket = true
+                }
             }
         }
 
@@ -61,20 +72,23 @@ function SearchForm (){
             let newWord
             if (firstLetter === firstLetter.toUpperCase()) {
                 newWord = searchWord.replace(/^\w/, c => c.toLowerCase())
+                wordChecker++
             } else {
                 newWord = searchWord.replace(/^\w/, c => c.toUpperCase())
+                wordChecker++
             }
             handleSearchFormSubmit(newWord)
         }
 
         if(bucketTuple) {
+            setNotFound(false)
             const pageId = bucketTuple.pageId
             const page = pageList[pageId]
             const tuple = page.filter((pageTuple, index) => {
                 return pageTuple.id === searchKey
             })
 
-            setSearchObject({...searchObject, searchWord: word, searchKey, pageId, bucketId})
+            setSearchObject({...searchObject, searchWord: word, searchKey, pageId, bucketId, isOverflowBucket})
 
             console.log(tuple)
         }
@@ -90,8 +104,13 @@ function SearchForm (){
             <button className="submit-button" onClick={() => {handleSearchFormSubmit(searchWord)}}>
                 Search
             </button>
-
-            <SearchObject searchObject={searchObject}/>
+            { notFound ? 
+                <div className="search-object-container">
+                    <div><span>Word Not Found</span></div>
+                </div>
+            :
+                <SearchObject searchObject={searchObject}/>
+            }
         </div>
     )
 }

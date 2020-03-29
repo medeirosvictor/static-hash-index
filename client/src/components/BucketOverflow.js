@@ -1,33 +1,33 @@
 import React from 'react'
 import { List } from "react-virtualized"
 
-const BucketOverflow = ({bucketOverflowTuples}) => {
-
+const BucketOverflow = ({overflowBucket}) => {
     const renderBucketOverflow = ({ index, key, style}) => {
         return (
             <div className="hash-tuple overflow-tuple" key={Math.floor(key * Math.random())}  style={style}>
                 <div>
-                    {bucketOverflowTuples[index].pageId}
+                    {overflowBucket[index].pageId}
                 </div>
                 <div>
-                    {bucketOverflowTuples[index].tupleId}
+                    {overflowBucket[index].tupleId}
                 </div>
             </div>
         )
     }
 
     return (
-        <div className="hash-tuples-container hash-tuple-container-overflow">
+        <div className="hash-tuples-overflow-container">
             <List
-                className="table-content"
-                width={700}
-                height={700}
-                rowHeight={30}
-                rowRenderer={renderBucketOverflow}
-                rowCount={bucketOverflowTuples.length}
-            />
+                    className="table-content"
+                    width={200}
+                    height={500}
+                    rowHeight={30}
+                    rowRenderer={renderBucketOverflow}
+                    rowCount={overflowBucket.length}
+                />
         </div>
     )
+
 }
 
 export default BucketOverflow

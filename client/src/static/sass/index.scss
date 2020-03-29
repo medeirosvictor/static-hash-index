@@ -167,6 +167,11 @@ html, body {
     flex-wrap: wrap;
 }
 
+.underline-overflow {
+    border-bottom: 1px solid #ece85c;
+    padding-bottom: 1px;
+}
+
 .page-tuple,
 .hash-tuple {
     display: flex;
@@ -213,6 +218,10 @@ html, body {
     color: #490b0b;
     margin-right: 20px;
     flex:0.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
 }
 
 .App {
@@ -239,7 +248,7 @@ html, body {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            margin: 10px 0;
+            margin: 10px;
 
             label {
                 flex: 1;

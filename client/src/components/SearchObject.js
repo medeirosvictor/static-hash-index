@@ -7,6 +7,11 @@ const SearchObject = ({searchObject}) => {
             <div><span className="bold">Page ID:</span> {searchObject.pageId}</div>
             <div><span className="bold">Search Key:</span> {searchObject.searchKey}</div>
             <div><span className="bold">Word:</span> {searchObject.searchWord}</div>
+            {searchObject.isOverflowBucket ?
+            <div><span className="bold underline-overflow">From Overflow Bucket</span></div>
+            :
+            null
+            }
         </div>
     )
 }
