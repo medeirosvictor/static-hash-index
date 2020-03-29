@@ -1,7 +1,6 @@
 import React, { useReducer } from 'react';
 import { Router } from "@reach/router"
 import './static/css/index.css';
-import InitForm from './components/InitForm'
 import Simulation from './components/Simulation'
 import SimulationContext from './components/contexts/SimulationContext'
 import InitState from './components/helpers/InitState'
@@ -14,11 +13,10 @@ function App() {
       <SimulationContext.Provider value={{state, dispatch}}>
         <div className="App">
             <h1 className="header">
-                Static Index Hash Simulator
+                Static Hashing Simulator
             </h1>
             <Router>
-                <InitForm path="/" />
-                <Simulation path="/simulation"/>
+                <Simulation path="/" />
             </Router>
         </div>
       </SimulationContext.Provider>

@@ -7,39 +7,40 @@ export default () => {
             let tableContent = state.table.content
             let bucketIds = []
             let bucketSize = 0
-            tableContent = tableContent.splice(10000, Number.MAX_VALUE)
-            console.log(tableContent)
+            // tableContent = tableContent.slice(0, 9999)
 
+            //Hash Function (Java`s Hashcode)
             const hashFunction = (searchKey) => {
+                return searchKey % 11;
+            }
+
+            const hashFunctionWord = (searchKey) => {
                 var hash = 0;
-                if (searchKey.length == 0) {
+                if (searchKey.length === 0) {
                     return hash;
                 }
                 for (var i = 0; i < searchKey.length; i++) {
                     var char = searchKey.charCodeAt(i);
+                    //shift 5 binary to left add char code for each char in the object (could be * 32 but bit shift is faster)
                     hash = ((hash<<5)-hash)+char;
                     hash = hash & hash; // Convert to 32bit integer
                 }
                 return hash;
             }
 
-            console.log("Bucket setup")
-
+            // Start - Setting up Bucket IDs List
             for (let i = 0; i < tableContent.length; i++) {
                 let currentWord = tableContent[i].word
 
-                let bucketId = hashFunction(currentWord)
+                let bucketId = hashFunctionWord(currentWord)
+                bucketId = hashFunction(bucketId)
 
                 bucketIds.push(bucketId)
             }
 
-            console.log("removing dale")
-            console.log(bucketIds)
             bucketIds = [...new Set(bucketIds)]
-            console.log(bucketIds)
 
             bucketSize = Math.ceil(tableContent.length / bucketIds.length)
-            let overflowCounter = 0
             const bucketAmount = bucketIds.length
 
             let bucketList = bucketIds.map((bucketId) => {
@@ -49,6 +50,7 @@ export default () => {
                     overflowBuckets: []
                 }
             })
+            // End - Setting up Bucket IDs List
 
             console.log("End Bucket setup")
 
@@ -62,14 +64,10 @@ export default () => {
             const tableContentString = [...tableContent]
 
             if (pageAmount > 0) {
-
                 calculatedPageSize = Math.ceil(tableContent.length / pageAmount)
-
                 calculatedPageAmount = pageAmount
             } else if (pageSize > 0) {
-
                 calculatedPageAmount = Math.ceil(tableContent.length / pageSize)
-
                 calculatedPageSize = pageSize
             }
 
@@ -93,33 +91,32 @@ export default () => {
                     pageList[i].push(tuple)
                 }
             }
+
             console.log(pageList)
             console.timeEnd("building pages");
 
             console.log("Mounting buckets...")
             console.time("building buckets");
 
-            const currentHashFunction = state.meta.hashFunction
-            console.log(currentHashFunction)
-
-            //H(k) = |k| mod 11 
             // Collision Rate = Total Number of Collisions / Amount of hash keys
             // Overflow Rate =  Total number of overflows / Amount of hash keys
-
+            let overflowCounter = 0
             for (let i = 0; i < pageList.length; i++) {
                 for (let j = 0; j < pageList[i].length; j++) {
                     let currentPageId = i
                     let currentTupleWord = pageList[i][j].word
+                    let currentTupleId = pageList[i][j].id
 
                     //apply hash
-                    let currentHashKey = hashFunction(currentTupleWord)
+                    let currentHashKey = hashFunctionWord(currentTupleWord)
+                    currentHashKey = hashFunction(currentHashKey)
 
                     let currentBucket = bucketList.find((bucket) => { return bucket.id === currentHashKey})
                     if (currentBucket) {
                         if (currentBucket.hashTable.length < bucketSize) {
                             currentBucket.hashTable.push({
                                 pageId: currentPageId,
-                                tupleId: currentTupleWord
+                                tupleId: currentTupleId
                             })
                         } else {
                             //Overflow case
@@ -134,7 +131,7 @@ export default () => {
                                 if (currentOverflowBucket) {
                                     currentOverflowBucket.hashTable.push({
                                         pageId: currentPageId,
-                                        tupleId: currentTupleWord
+                                        tupleId: currentTupleId
                                     })
                                 } else {
                                     currentBucket.overflowBuckets[currentBucket.overflowBuckets.length-1] = []
@@ -142,11 +139,11 @@ export default () => {
                                         id: currentBucket.id,
                                         hashTable: [{
                                             pageId: currentPageId,
-                                            tupleId: currentTupleWord
+                                            tupleId: currentTupleId
                                         }],
                                         isOverflowBucket: true
                                     })
-                                    overflowCounter++
+                                    overflowCounter += 1
                                 }
                             } else {
                                 //There are no overflowbuckets inside this bucket yet
@@ -155,18 +152,18 @@ export default () => {
                                     id: currentBucket.id,
                                     hashTable: [{
                                         pageId: currentPageId,
-                                        tupleId: currentTupleWord
+                                        tupleId: currentTupleId
                                     }],
                                     isOverflowBucket: true
                                 })
-                                overflowCounter++
+                                overflowCounter += 1
                             }
                         }
                     }
                 }
             }
 
-            const overflowRate = Math.floor((overflowCounter / bucketAmount))
+            const overflowRate = (overflowCounter / bucketAmount).toFixed(2)
 
             console.timeEnd("building buckets");
             console.timeEnd("BUILDING SIMULATION");

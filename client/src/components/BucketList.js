@@ -3,16 +3,14 @@ import SimulationContext from './contexts/SimulationContext'
 import Bucket from './Bucket'
 import BucketOverflow from './BucketOverflow'
 
-const BucketList = () => {
-    const { state } = useContext(SimulationContext)
-    const { bucketList } = state
+const BucketList = ({bucketList}) => {
     let overflowBuckets
 
     const bucketContent = bucketList.map((bucket, index) => {
         bucket.overflowBuckets.forEach((currentOverflowBucket) => {
             overflowBuckets = currentOverflowBucket.hashTable.map((hashTuple) => {
                 return (
-                    <div className="hash-tuple overflow-tuple" key={index*20}>
+                    <div className="hash-tuple overflow-tuple" key={"overflowBucket"+hashTuple.pageId+hashTuple.tupleId+Math.floor(index * Math.random())} >
                         <div>
                             { hashTuple.pageId }
                         </div>
@@ -25,7 +23,7 @@ const BucketList = () => {
         })
 
         return (
-            <div className="bucket-content" key={index*10}>
+            <div className="bucket-content" key={"bucketlist"+bucket.id+Math.floor(3 * Math.random())} >
                 <div className="bucket-id">
                     Bucket { bucket.id }
                 </div>

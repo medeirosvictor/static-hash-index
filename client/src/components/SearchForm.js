@@ -1,20 +1,97 @@
-import React from 'react'
+import React, { useState, useContext } from 'react'
+import SimulationContext from './contexts/SimulationContext'
+import SearchObject from './SearchObject'
 
 function SearchForm (){
-    function handleSearchFormSubmit() {
-        console.log("searching for key...")
+    const { state } = useContext(SimulationContext)
+    const  bucketList = [...state.bucketList]
+    const  pageList  = [...state.pageList]
+    const [ searchWord, setSearchWord ] = useState("")
+    const [ searchObject, setSearchObject ] = useState({})
+
+    const hashFunction = (searchKey) => {
+        return searchKey % 11;
+    }
+
+    const hashFunctionWord = (searchKey) => {
+        var hash = 0;
+        if (searchKey.length === 0) {
+            return hash;
+        }
+        for (var i = 0; i < searchKey.length; i++) {
+            var char = searchKey.charCodeAt(i);
+            //shift 5 binary to left add char code for each char in the object (could be * 32 but bit shift is faster)
+            hash = ((hash<<5)-hash)+char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return hash;
+    }
+
+    const handleSearchWordChange = (e) => {
+        setSearchWord(e.target.value)
+    }
+
+    function handleSearchFormSubmit(word) {
+        let searchKey = hashFunctionWord(word)
+        let bucketId = hashFunction(searchKey)
+
+        let bucket = bucketList.filter(bucket => {
+            return bucket.id === bucketId
+        }); bucket = bucket[0]
+
+        let bucketTupleList = bucket.hashTable.filter(tuple => {
+            return tuple.tupleId === searchKey
+        }); let bucketTuple = bucketTupleList[0]
+
+        //Check if inside overflow bucket
+        if (!bucketTuple) {
+            let bucketOverflowTupleList = bucket.overflowBuckets.forEach(ovBucket => {
+                ovBucket.hashTable.filter(ovTuple => {
+                    return ovTuple === searchKey
+                })
+            })
+
+            if (bucketOverflowTupleList) {
+                bucketTuple = bucketOverflowTupleList[0]
+            }
+        }
+
+        if(!bucketTuple) {
+            let firstLetter = word.charAt(0);
+            let newWord
+            if (firstLetter === firstLetter.toUpperCase()) {
+                newWord = searchWord.replace(/^\w/, c => c.toLowerCase())
+            } else {
+                newWord = searchWord.replace(/^\w/, c => c.toUpperCase())
+            }
+            handleSearchFormSubmit(newWord)
+        }
+
+        if(bucketTuple) {
+            const pageId = bucketTuple.pageId
+            const page = pageList[pageId]
+            const tuple = page.filter((pageTuple, index) => {
+                return pageTuple.id === searchKey
+            })
+
+            setSearchObject({...searchObject, searchWord: word, searchKey, pageId, bucketId})
+
+            console.log(tuple)
+        }
     }
 
     return (
         <div className={true ? "search-form" : "hidden"}>
             <div className="main-form_input-group">
-                <label htmlFor="searchKey">Search Key:</label>
-                <input type="text" name="searchKey" id="searchKey" placeholder="0"/>
+                <label htmlFor="searchKey">Search Word:</label>
+                <input type="text" name="searchKey" id="searchKey" onChange={handleSearchWordChange}/>
             </div>
 
-            <button className="submit-button" onClick={handleSearchFormSubmit}>
+            <button className="submit-button" onClick={() => {handleSearchFormSubmit(searchWord)}}>
                 Search
             </button>
+
+            <SearchObject searchObject={searchObject}/>
         </div>
     )
 }

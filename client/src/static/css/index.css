@@ -11,6 +11,9 @@ html, body {
 .text-left {
   text-align: left; }
 
+.text-center {
+  text-align: center; }
+
 .bold {
   font-weight: bold; }
 
@@ -20,7 +23,7 @@ html, body {
   padding: 5px; }
 
 .page-container {
-  max-height: 500px;
+  max-height: 800px;
   max-width: 800px;
   margin: 30px auto;
   overflow: auto;
@@ -35,7 +38,7 @@ html, body {
   flex-wrap: wrap; }
 
 .page-content {
-  max-width: 350px;
+  max-width: 200px;
   width: 50%;
   border: 1px solid lightblue;
   margin: 10px; }
@@ -59,7 +62,7 @@ html, body {
   padding: 5px; }
 
 .bucket-container {
-  max-height: 500px;
+  max-height: 800px;
   max-width: 800px;
   margin: 30px auto;
   overflow: auto;
@@ -112,6 +115,17 @@ html, body {
   display: flex;
   justify-content: space-evenly; }
 
+.search-object-container {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: #2b3a84;
+  color: #6d80e2;
+  padding: 10px;
+  margin: 10px; }
+
+.loading-icon {
+  max-width: 30px;
+  vertical-align: middle; }
+
 .hash-tuples-container {
   margin: 0 auto;
   display: flex;
@@ -121,9 +135,10 @@ html, body {
 .hash-tuple {
   display: flex;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
   border-bottom: 1px solid gray;
-  line-height: 25px; }
+  line-height: 25px;
+  width: 100%; }
   .page-tuple:last-child,
   .hash-tuple:last-child {
     border: none; }
@@ -135,20 +150,26 @@ html, body {
   background: #ece85c;
   color: #af8b08; }
 
-.simulation-info {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  max-width: 300px;
+.simulation-status {
+  text-align: center;
   margin: 0 auto;
-  background-color: hotpink;
-  padding: 15px;
-  color: #490b0b; }
+  max-width: 980px;
+  display: flex;
+  justify-content: center; }
 
 .search-form {
   padding: 20px;
   background: white;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  max-width: 550px;
-  margin: 40px auto; }
+  flex: 1.25; }
+
+.simulation-info {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: hotpink;
+  padding: 15px;
+  color: #490b0b;
+  margin-right: 20px;
+  flex: 0.5; }
 
 .App .header {
   font-family: "Roboto";
@@ -181,20 +202,21 @@ html, body {
     width: 100%; }
   .App .main-form label {
     margin-bottom: 15px; }
-  .App .main-form .submit-button {
-    padding: 10px;
-    text-transform: uppercase;
-    min-width: 200px;
-    background-color: #247b33;
-    outline: none;
-    border: none;
-    color: white;
-    font-family: 'Open Sans';
-    font-weight: 400;
-    font-size: 17px;
-    letter-spacing: 1px;
-    transition: 0.3s;
-    opacity: 0.7;
-    cursor: pointer; }
-    .App .main-form .submit-button:hover {
-      opacity: 1; }
+
+.submit-button {
+  padding: 10px;
+  text-transform: uppercase;
+  min-width: 200px;
+  background-color: #247b33;
+  outline: none;
+  border: none;
+  color: white;
+  font-family: 'Open Sans';
+  font-weight: 400;
+  font-size: 17px;
+  letter-spacing: 1px;
+  transition: 0.3s;
+  opacity: 0.7;
+  cursor: pointer; }
+  .submit-button:hover {
+    opacity: 1; }

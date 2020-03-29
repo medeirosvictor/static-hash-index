@@ -2,10 +2,7 @@ import React, { useContext } from 'react'
 import SimulationContext from './contexts/SimulationContext'
 import Page from './Page'
 
-const PageList = () => {
-    const { state } = useContext(SimulationContext)
-    const { pageList } = state
-
+const PageList = ({pageList}) => {
     const pageContent = pageList.map((page, index) => {
         return (
             <div className="page-content" key={index}>

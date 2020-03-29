@@ -1,35 +1,51 @@
 const express = require('express')
 const path = require('path')
 const fs = require('fs')
-const generatePassword = require('password-generator')
 const helpers = require("./helpers")
 const initialState = require("./initialState")
-const cors = require('cors')
+const bodyParser = require('body-parser')
 
 const app = express();
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
-app.use(cors())
-
-const fileContent = fs.readFileSync("words.txt","utf8")
-const fileContentArray = fileContent.split("\n")
+app.use(express.static(path.join(__dirname, 'client/build')))
+app.use(bodyParser.json())
 
 let simulationData = initialState
-simulationData = helpers.mountTables(simulationData, fileContentArray)
+
+fs.readFile(`./words.json`, (err, data) => {
+    if (err) {
+        throw err
+    }
+
+    const content = JSON.parse(data)
+    simulationData.table = content.table
+})
+
+
+// Reading file and parsing to JSON format with my desired structure
+// const fileContent = fs.readFileSync("words.txt","utf8")
+// const fileContentArray = fileContent.split("\n")
+// simulationData = helpers.mountTables(simulationData, fileContentArray)
+// fs.writeFile("words.json", JSON.stringify(simulationData.table), 'utf8', function (err) {
+//     if (err) {
+//         console.log("An error occured while writing JSON Object to File.");
+//         return console.log(err);
+//     }
+//     console.log("JSON file has been saved.");
+// });
 
 // Put all API endpoints under '/api'
-app.get('/api/simulation/table', (req, res) => {
-    res.send(simulationData.table)
-    console.log(`Simulation Data sent`);
+app.get(`/api/simulation/table`, async (req, res) => {
+    res.status(200).send({...simulationData})
+    console.log(`Simulation Table Data sent`);
 });
-    
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname+'/client/build/index.html'));
-});
+
+app.post('/api/simulation/pages', (req, res) => {
+    console.log("Pls", req.body)
+    res.json(simulationData)
+})
 
 const port = process.env.PORT || 5000;
-app.listen(port);
-
-console.log(`Simulation Data API listening on ${port}`);
+app.listen(port, () => {
+    console.log(`Simulation Data API listening on ${port}`)
+});

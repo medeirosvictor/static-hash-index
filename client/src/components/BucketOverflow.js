@@ -5,7 +5,7 @@ const BucketOverflow = ({bucketOverflowTuples}) => {
 
     const renderBucketOverflow = ({ index, key, style}) => {
         return (
-            <div className="hash-tuple overflow-tuple" key={key} style={style}>
+            <div className="hash-tuple overflow-tuple" key={Math.floor(key * Math.random())}  style={style}>
                 <div>
                     {bucketOverflowTuples[index].pageId}
                 </div>
