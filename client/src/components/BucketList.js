@@ -1,11 +1,8 @@
-import React, { useContext } from 'react'
-import SimulationContext from './contexts/SimulationContext'
+import React from 'react'
 import Bucket from './Bucket'
 import BucketOverflowList from './BucketOverflowList'
 
 const BucketList = ({bucketList}) => {
-    let overflowBuckets
-
     const bucketContent = bucketList.map((bucket, index) => {
         return (
             <div className="bucket-content" key={"bucketlist"+bucket.id+Math.floor(3 * Math.random())} >

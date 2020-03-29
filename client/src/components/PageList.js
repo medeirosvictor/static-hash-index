@@ -1,5 +1,4 @@
-import React, { useContext } from 'react'
-import SimulationContext from './contexts/SimulationContext'
+import React from 'react'
 import Page from './Page'
 
 const PageList = ({pageList}) => {

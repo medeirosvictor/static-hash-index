@@ -4,7 +4,7 @@ import { List } from "react-virtualized"
 const BucketOverflow = ({overflowBucket}) => {
     const renderBucketOverflow = ({ index, key, style}) => {
         return (
-            <div className="hash-tuple overflow-tuple" key={Math.floor(key * Math.random())}  style={style}>
+            <div className="hash-tuple overflow-tuple" key={"overflowtuple"+key+":"+overflowBucket[index].pageId+":"+overflowBucket[index].tupleId}  style={style}>
                 <div>
                     {overflowBucket[index].pageId}
                 </div>

@@ -93,7 +93,6 @@ export default () => {
                 }
             }
 
-            console.log(pageList)
             console.timeEnd("building pages");
 
             console.log("Mounting buckets...")
@@ -121,9 +120,6 @@ export default () => {
                                 tupleId: currentTupleId
                             })
                         } else {
-                            if (bucketId < 0) {
-                                debugger
-                            }
                             //Overflow case
                             //inside currentBucket find the overflow array if empty create a bucket object inside
                             // if not empty but already full create another bucket inside overflow
