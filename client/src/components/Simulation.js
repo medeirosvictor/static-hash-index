@@ -41,7 +41,6 @@ const Simulation = () => {
           })
         .then(response => response.json())
         .then(body => {
-            console.log(body);
             dispatch({type: 'UPDATE_SIMDATA', payload: { table: {...state.table, ...body.table}}})
             setTable(body.table)
             buildSimulation()
@@ -61,8 +60,8 @@ const Simulation = () => {
                     bucketList: event.data.bucketList,
                     meta: {
                         ...state.meta,
-                        pageAmount: event.data.calculatedPageAmount,
-                        pageSize: event.data.calculatedPageSize,
+                        pageAmount: event.data.pageAmount,
+                        pageSize: event.data.pageSize,
                         bucketAmount: event.data.meta.bucketAmount,
                         bucketSize: event.data.meta.bucketSize,
                         bucketIds: event.data.meta.bucketIds,

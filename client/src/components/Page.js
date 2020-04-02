@@ -22,7 +22,7 @@ const Page = ({pageTuples}) => {
                 className="table-content"
                 width={200}
                 height={500}
-                rowHeight={30}
+                rowHeight={50}
                 rowRenderer={renderPage}
                 rowCount={pageTuples.length}
             />

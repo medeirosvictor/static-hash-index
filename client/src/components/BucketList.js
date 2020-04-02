@@ -4,8 +4,10 @@ import BucketOverflowList from './BucketOverflowList'
 import { Collection } from 'react-virtualized'
 
 const BucketList = ({bucketList}) => {
-    let nextSize = 0
-    let prevH = 0
+    let currentX = 0;
+    let currentY = 0;
+    let nextY = 0;
+    let nextX = 0;
     let rowCount = 0
     const validBucketsLength = bucketList.filter(function(value) { return value !== undefined }).length
 
@@ -62,9 +64,7 @@ const BucketList = ({bucketList}) => {
     })
 
     const _cellSizeAndPositionGetter = ({index}) => {
-        let currentX, currentY
         if (bucketList[index] === undefined ) {
-            console.log(bucketList[index])
             return ({
                 width: 200,
                 height: 200,
@@ -72,17 +72,16 @@ const BucketList = ({bucketList}) => {
                 y: 0
             })
         } else {
-            currentX = nextSize
-            nextSize = nextSize + 225
-            currentY = prevH
+            currentX = nextX
+            currentY = nextY
             rowCount++
 
-            if (rowCount > 4) {
+            if (rowCount > 3) {
                 rowCount = 0
-                currentY = prevH
-                prevH = prevH + 250
-                nextSize = 0
-                currentX = 0
+                nextY = nextY + 250
+                nextX = 0
+            } else {
+                nextX = nextX + 225
             }
 
             return ({

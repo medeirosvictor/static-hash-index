@@ -12,7 +12,7 @@ function SearchForm (){
     let wordChecker = 0
 
     const hashFunction = (searchKey) => {
-        return searchKey % 11;
+        return searchKey % 466997;
     }
 
     const hashFunctionWord = (searchKey) => {
@@ -26,7 +26,7 @@ function SearchForm (){
             hash = ((hash<<5)-hash)+char;
             hash = hash & hash; // Convert to 32bit integer
         }
-        return hash;
+        return Math.abs(hash);
     }
 
     const handleSearchWordChange = (e) => {
@@ -44,9 +44,7 @@ function SearchForm (){
         let bucketId = hashFunction(searchKey)
         let isOverflowBucket = false
 
-        let bucket = bucketList.filter(bucket => {
-            return bucket.id === bucketId
-        }); bucket = bucket[0]
+        let bucket = bucketList[bucketId];
 
         let bucketTupleList = bucket.hashTable.filter(tuple => {
             return tuple.tupleId === searchKey
