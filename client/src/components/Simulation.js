@@ -117,14 +117,6 @@ const Simulation = () => {
                     <input type="text" name="pageSet" id="pageSet" placeholder="0" required/>
                 </div>
 
-                <div className="main-form_input-group">
-                    <label className="bold">Hash Function:</label>
-                    <select>
-                        <option value="JavaHashCode" defaultValue>Java's HashCode</option>
-                        <option value="mod11">Mod 11</option>
-                    </select>
-                </div>
-
                 <button className="submit-button" type="submit">
                     Simulate
                 </button>

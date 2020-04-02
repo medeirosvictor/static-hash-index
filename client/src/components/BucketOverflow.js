@@ -20,7 +20,7 @@ const BucketOverflow = ({overflowBucket}) => {
             <List
                     className="table-content"
                     width={200}
-                    height={500}
+                    height={100}
                     rowHeight={30}
                     rowRenderer={renderBucketOverflow}
                     rowCount={overflowBucket.length}

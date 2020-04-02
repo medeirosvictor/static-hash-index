@@ -6,12 +6,13 @@ export default () => {
             const state = e.data
             let tableContent = state.table.content
             let bucketIds = []
+            let bucketList = []
             let bucketSize = 0
             // tableContent = tableContent.slice(0, 14999)
 
             //Hash Function (Java`s Hashcode)
             const hashFunction = (searchKey) => {
-                return searchKey % 11;
+                return searchKey % 466997;
             }
 
             const hashFunctionWord = (searchKey) => {
@@ -25,7 +26,7 @@ export default () => {
                     hash = ((hash<<5)-hash)+char;
                     hash = hash & hash; // Convert to 32bit integer
                 }
-                return hash;
+                return Math.abs(hash);
             }
 
             // Start - Setting up Bucket IDs List
@@ -36,21 +37,20 @@ export default () => {
                 bucketId = hashFunction(bucketId)
 
                 bucketIds.push(bucketId)
+                bucketList[bucketId] = {
+                    hashTable: [],
+                    overflowBuckets: []
+                }
             }
 
             bucketIds = [...new Set(bucketIds)]
             bucketIds.sort()
 
+            // debugger;
+
             bucketSize = Math.ceil(tableContent.length / bucketIds.length)
             const bucketAmount = bucketIds.length
 
-            let bucketList = bucketIds.map((bucketId) => {
-                return {
-                    id: bucketId,
-                    hashTable: [],
-                    overflowBuckets: []
-                }
-            })
             // End - Setting up Bucket IDs List
 
             console.log("End Bucket setup")
@@ -112,7 +112,7 @@ export default () => {
                     let bucketId = hashFunction(currentHashKey)
                     bucketId = bucketId === -0 ? 0 : bucketId
 
-                    let currentBucket = bucketList.find((bucket) => { return bucket.id === bucketId})
+                    let currentBucket = bucketList[bucketId]
                     if (currentBucket) {
                         if (currentBucket.hashTable.length < bucketSize) {
                             currentBucket.hashTable.push({
@@ -134,13 +134,13 @@ export default () => {
                                         pageId: currentPageId,
                                         tupleId: currentTupleId
                                     })
-                                    console.log("Old Bucket Same Overflow:" + overflowCounter)
+                                    // console.log("Old Bucket Same Overflow:" + overflowCounter)
                                 }
                             } else {
                                 //There are no overflowbuckets inside this bucket yet
                                 currentBucket.overflowBuckets = []
                                 currentBucket.overflowBuckets.push({
-                                    id: currentBucket.id,
+                                    id: bucketId,
                                     hashTable: [{
                                         pageId: currentPageId,
                                         tupleId: currentTupleId
@@ -148,7 +148,7 @@ export default () => {
                                     isOverflowBucket: true
                                 })
                                 overflowCounter += 1
-                                console.log("New Bucket New Overflow:" + overflowCounter)
+                                // console.log("New Bucket New Overflow:" + overflowCounter)
                             }
                         }
                     }

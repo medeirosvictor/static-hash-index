@@ -20,8 +20,8 @@ const Page = ({pageTuples}) => {
         <div className="page-tuples-container">
             <List
                 className="table-content"
-                width={700}
-                height={700}
+                width={200}
+                height={500}
                 rowHeight={30}
                 rowRenderer={renderPage}
                 rowCount={pageTuples.length}

@@ -33,8 +33,8 @@ const Bucket = ({bucketTuples}) => {
         <div className="hash-tuples-container">
             <List
                 className="table-content"
-                width={700}
-                height={700}
+                width={200}
+                height={100}
                 rowHeight={30}
                 rowRenderer={renderBucket}
                 rowCount={bucketTuples.length}
