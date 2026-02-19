@@ -52,7 +52,7 @@ vite.config.js                 # Vite config with React plugin, base path for GH
 - `npm run deploy` — build + deploy to GitHub Pages (master branch)
 
 ## Key Concepts
-- **Two-level hashing**: word → 32-bit hashCode → bucket ID via `key % 466997`
+- **Two-level hashing**: word → 32-bit hashCode → bucket ID via `key % 11`
 - **Pages**: fixed-size blocks holding tuples (word + ID), randomly distributed
 - **Buckets**: hold (pageId, tupleId) pointers; overflow when full
 - **Overflow buckets**: chained to main bucket when capacity exceeded
@@ -68,7 +68,7 @@ Managed via `useReducer` + React Context:
           totalCollisionAmount, totalOverflowAmount },
   table: { meta: { rowCount, columns }, content: [{id, word}...] },
   pageList: [ [{id, word}...], ... ],
-  bucketList: [ { hashTable: [{pageId, tupleId}...], overflowBuckets: [...] }, ... ]
+  bucketList: { [bucketId]: { hashTable: [{pageId, tupleId}...], overflowBuckets: [...] }, ... }
 }
 ```
 
@@ -82,10 +82,11 @@ Managed via `useReducer` + React Context:
 
 ## UI Features
 - **Progress bar**: Streaming download progress for words.json, indeterminate bar during simulation build
-- **Search highlighting**: Found bucket and page get amber glow/border; matching tuples highlighted
+- **Search highlighting**: Found bucket and page get amber glow/border; matching tuples highlighted; auto-scrolls to match
 - **Search path visualization**: Shows `word → hash → Bucket N → Page N` step chain
 - **Tooltips**: Hover ⓘ icons on Pages, Buckets, Table, Stats, and form options for explanations
 - **Responsive layout**: CSS Grid with `auto-fill, minmax(200px, 1fr)` for pages and buckets
+- **Paginated grids**: Pages and buckets render 50 at a time with "Show More" buttons
 - **Error handling**: User-visible error messages for failed loads and invalid input
 
 ## Feedback
@@ -93,7 +94,10 @@ Managed via `useReducer` + React Context:
 
 ## Notes
 - Dataset is ~466K English words, pre-hashed in words.json (~17MB)
-- Hash functions: `hashFunctionWord` (Java hashCode-style 32-bit) and `hashFunction` (mod 466997)
+- Hash functions: `hashFunctionWord` (Java hashCode-style 32-bit) and `hashFunction` (mod 11)
+- mod 11 chosen to produce meaningful collisions/overflow — demonstrates real hash index behavior
 - Single source of truth for hash functions in `helpers/Helpers.js` (worker keeps own copy due to worker isolation)
+- Worker uses Fisher-Yates shuffle + slice for O(n) page building (not O(n²) splice)
+- bucketList is a compact object `{bucketId: bucket}` (not a sparse array) for efficient serialization
 - Reducer uses custom `deepMerge` — returns new object, never mutates state
 - Deploy goes to `master` branch via `gh-pages -d dist -b master`

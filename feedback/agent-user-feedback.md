@@ -38,7 +38,7 @@ The project was originally a broken Express+CRA prototype. All architectural and
 | Deduplicate hash functions | ✅ Single source in `helpers/Helpers.js`, imported by SearchForm. Worker keeps its own copy (required — workers can't import from main thread in all browsers) |
 | Fix package.json name | ✅ `"static-hash-index-simulator"` |
 | Fix InitState hash description | ✅ `"H(k) = \|k\| mod 466997"` |
-| Fix Helpers.js hash function | ✅ Was `% 11`, now `% 466997` |
+| Fix Helpers.js hash function | ✅ Was `% 11`, changed to `% 466997`, then reverted to `% 11` in Phase 5 for meaningful collisions |
 | GitHub Pages deployment | ✅ `gh-pages -d dist -b master`, base path configured in Vite |
 | Fix data loss in overflow | ✅ Added missing `else` branch when all overflow buckets full |
 | Remove dead code | ✅ `workerSetup.js`, `loading.gif`, unused Helpers functions cleaned up |
@@ -56,6 +56,19 @@ The project was originally a broken Express+CRA prototype. All architectural and
 | Responsive simulation status | ✅ Flex layout with mobile breakpoint |
 | UI modernization | ✅ Replaced hotpink panel with dark slate gradient, rounded corners, consistent color scheme, proper focus states on inputs |
 
+## Phase 5 — Performance & Search Fix ✅ COMPLETE
+
+| Task | Status |
+|---|---|
+| Fix O(n²) page building in worker | ✅ Replaced `splice` loop with Fisher-Yates shuffle + slice — 14.6s → <1s |
+| Fix browser freeze on search | ✅ Was auto-expanding BucketList to render 350K+ components to reach highlighted bucket |
+| Fix browser freeze rendering buckets | ✅ Added pagination (50 at a time) to BucketList and PageList with "Show More" buttons |
+| Change hash function from mod 466997 to mod 11 | ✅ 466K buckets with ~1 entry each was meaningless; 11 buckets with real collisions/overflow demonstrates the concept |
+| Optimize bucketList serialization | ✅ Converted from sparse array (466K slots) to compact object `{id: bucket}` for postMessage |
+| Add scroll-to-highlight on search | ✅ Smooth scrolls to matching bucket and page when search finds a result |
+| Clean up console noise | ✅ Removed all console.log/time/timeEnd from worker |
+| Section counts in UI | ✅ "Pages (100 total)", "Buckets (11 total)" shown in section headers |
+
 ---
 
 ## Current Architecture
@@ -64,7 +77,7 @@ The project was originally a broken Express+CRA prototype. All architectural and
 - **Vite** for dev/build, Dart Sass for styles
 - **React 16** with `useReducer` + `useContext` (no Redux, no lodash)
 - **react-virtualized** `List` for large scrollable content within pages/buckets/table
-- **CSS Grid** for page/bucket grid layout (responsive)
+- **CSS Grid** for page/bucket grid layout (responsive), paginated 50 at a time
 - **Web Worker** (Vite native) for off-main-thread simulation building
 - **gh-pages** deploys to master branch
 

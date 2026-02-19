@@ -19,7 +19,7 @@ This avoids scanning the entire table — the lookup is essentially O(1).
 ### Hash Functions
 The simulator uses a two-level hashing scheme:
 - **Word → Search Key**: A Java-style `hashCode` implementation — for each character, it computes `hash = ((hash << 5) - hash) + charCode`, producing a 32-bit integer.
-- **Search Key → Bucket ID**: `H(k) = |k| mod N`, where N is the number of distinct bucket IDs derived from the dataset (466,997 in the default word list).
+- **Search Key → Bucket ID**: `H(k) = |k| mod 11` — a small modulus that produces meaningful collisions and overflow chains, demonstrating how real hash indexes handle bucket saturation.
 
 ### Pages
 The raw data (≈466K English words with their hash IDs) is divided into **pages** — fixed-size blocks that simulate disk pages. You choose either:
@@ -53,7 +53,8 @@ The project is a **client-only React SPA** with all simulation logic running in 
 
 - **Data**: A pre-computed dataset of ~466K English words with their hash IDs, loaded as a static JSON asset
 - **Web Worker**: The heavy simulation (page building, bucket allocation, overflow handling) runs in a dedicated Web Worker thread to keep the UI responsive
-- **Virtualized Rendering**: Uses `react-virtualized` to efficiently render hundreds of thousands of rows, pages, and buckets without killing the browser
+- **Virtualized Rendering**: Uses `react-virtualized` to efficiently render large lists within pages, buckets, and the word table
+- **Paginated Grids**: Pages and buckets are paginated (50 at a time) with "Show More" to avoid overwhelming the DOM
 
 ## Live Demo
 
@@ -111,14 +112,13 @@ src/
 │   ├── BucketOverflowList.jsx  # Overflow bucket chain
 │   ├── BucketOverflow.jsx      # Single overflow bucket
 │   ├── simulationWorker.js     # Web Worker — builds pages & buckets
-│   ├── workerSetup.js          # Web Worker bootstrapper
 │   ├── contexts/
 │   │   └── SimulationContext.js    # React Context for simulation state
 │   ├── helpers/
-│   │   ├── Helpers.js         # Hash function, file reading, shuffle
+│   │   ├── Helpers.js         # Hash functions (single source of truth), shuffle, file reader
 │   │   └── InitState.js      # Default state shape
 │   └── reducers/
-│       └── simulationDataReducer.js  # State reducer (lodash merge)
+│       └── simulationDataReducer.js  # State reducer (custom deepMerge, no lodash)
 ├── static/
 │   ├── css/index.css       # Compiled CSS
 │   └── sass/index.scss     # SASS source
