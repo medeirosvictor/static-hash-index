@@ -55,23 +55,19 @@ const Simulation = () => {
             const reader = response.body.getReader()
             const chunks = []
 
-            return new ReadableStream({
-                start(controller) {
-                    function pump() {
-                        return reader.read().then(({ done, value }) => {
-                            if (done) {
-                                controller.close()
-                                return
-                            }
-                            loaded += value.byteLength
-                            setLoadProgress(Math.round((loaded / total) * 100))
-                            controller.enqueue(value)
-                            return pump()
-                        })
+            function pump() {
+                return reader.read().then(({ done, value }) => {
+                    if (done) {
+                        const blob = new Blob(chunks)
+                        return blob.text().then(text => JSON.parse(text))
                     }
+                    loaded += value.byteLength
+                    chunks.push(value)
+                    setLoadProgress(Math.round((loaded / total) * 100))
                     return pump()
-                }
-            }).then(stream => new Response(stream)).then(r => r.json())
+                })
+            }
+            return pump()
         })
     }
 
