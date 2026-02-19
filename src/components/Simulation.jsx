@@ -13,7 +13,7 @@ const Simulation = () => {
     const { state, dispatch } = useContext(SimulationContext)
     const [table, setTable] = useState({})
     const [pageList, setPageList] = useState([])
-    const [bucketList, setBucketList] = useState([])
+    const [bucketList, setBucketList] = useState({})
     const [simulationStatus, setSimulationStatus] = useState('')
     const [error, setError] = useState(null)
     const [loadProgress, setLoadProgress] = useState(0)

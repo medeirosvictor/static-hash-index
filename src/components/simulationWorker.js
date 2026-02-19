@@ -2,7 +2,6 @@
 self.addEventListener('message', e => {
     if (!e) return;
 
-    console.time("BUILDING SIMULATION");
     const state = e.data
     let tableContent = state.table.content
     let bucketIds = []
@@ -11,7 +10,7 @@ self.addEventListener('message', e => {
 
     //Hash Function
     const hashFunction = (searchKey) => {
-        return searchKey % 466997;
+        return searchKey % 11;
     }
 
     const hashFunctionWord = (searchKey) => {
@@ -49,14 +48,10 @@ self.addEventListener('message', e => {
 
     // End - Setting up Bucket IDs List
 
-    console.log("Mounting pages...")
-    console.time("building pages");
-
     let calculatedPageSize = 0
     let calculatedPageAmount = 0
     const { pageAmount, pageSize } = state.meta
     let pageList = []
-    const tableContentString = [...tableContent]
 
     if (pageAmount > 0) {
         calculatedPageSize = Math.ceil(tableContent.length / pageAmount)
@@ -66,31 +61,22 @@ self.addEventListener('message', e => {
         calculatedPageSize = pageSize
     }
 
-    for (let i = 0; i < calculatedPageAmount; i++) {
-        if (tableContentString.length === 0) {
-            break
-        }
-
-        for (let j = 0; j < calculatedPageSize; j++) {
-            if (j === 0) {
-                pageList[i] = []
-            }
-
-            if (tableContentString.length === 0) {
-                break
-            }
-
-            let rand = Math.floor(Math.random()*tableContentString.length)
-            let tuple = tableContentString[rand]
-            tableContentString.splice(rand, 1)
-            pageList[i].push(tuple)
-        }
+    // Fisher-Yates shuffle (O(n) instead of O(n²) splice)
+    const shuffled = tableContent.slice()
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
     }
 
-    console.timeEnd("building pages");
+    // Slice shuffled array into pages
+    for (let i = 0; i < calculatedPageAmount; i++) {
+        const start = i * calculatedPageSize
+        if (start >= shuffled.length) break
+        const end = Math.min(start + calculatedPageSize, shuffled.length)
+        pageList[i] = shuffled.slice(start, end)
+    }
 
-    console.log("Mounting buckets...")
-    console.time("building buckets");
+    // Build buckets
 
     let overflowCounter = 0
     for (let i = 0; i < pageList.length; i++) {
@@ -153,12 +139,18 @@ self.addEventListener('message', e => {
 
     const overflowRate = (overflowCounter / bucketAmount).toFixed(2) * 100 
 
-    console.timeEnd("building buckets");
-    console.timeEnd("BUILDING SIMULATION");
+    // Convert sparse array to dense object for efficient postMessage serialization
+    const compactBucketList = {}
+    bucketList.forEach((bucket, i) => {
+        if (bucket !== undefined) {
+            compactBucketList[i] = bucket
+        }
+    })
+
     const res = {
         rows: tableContent,
         pageList,
-        bucketList,
+        bucketList: compactBucketList,
         pageAmount: calculatedPageAmount,
         pageSize: calculatedPageSize,
         meta: {
@@ -171,6 +163,5 @@ self.addEventListener('message', e => {
         }
     }
 
-    console.log(res)
     postMessage(res)
 })

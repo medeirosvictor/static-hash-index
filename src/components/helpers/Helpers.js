@@ -1,5 +1,5 @@
 export const hashFunction = (searchKey) => {
-    return searchKey % 466997
+    return searchKey % 11
 }
 
 export const hashFunctionWord = (searchKey) => {

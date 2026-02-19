@@ -5,7 +5,7 @@ import { hashFunction, hashFunctionWord } from './helpers/Helpers'
 
 function SearchForm({ onSearchResult }) {
     const { state } = useContext(SimulationContext)
-    const bucketList = state.bucketList || []
+    const bucketList = state.bucketList || {}
     const [searchWord, setSearchWord] = useState('')
     const [notFound, setNotFound] = useState(false)
     const [searchObject, setSearchObject] = useState(null)

@@ -8,7 +8,7 @@ const InitState = {
         bucketIds: [],
         bucketSize: 0,
         simulationStatus: false,
-        hashFunction: "H(k) = |k| mod 466997",
+        hashFunction: "H(k) = |k| mod 11",
         collisionRate: 0,
         overflowRate: 0,
         totalCollisionAmount: 0,
@@ -22,7 +22,7 @@ const InitState = {
         content: []
     },
     pageList: [],
-    bucketList: []
+    bucketList: {}
 }
 
 export default InitState
