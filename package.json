@@ -7,7 +7,7 @@
     "start": "vite --port 3000",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "vite build && gh-pages -d dist -b master"
+    "deploy": "vite build && gh-pages -d dist -b gh-pages"
   },
   "dependencies": {
     "react": "^16.14.0",

@@ -100,4 +100,4 @@ Managed via `useReducer` + React Context:
 - Worker uses Fisher-Yates shuffle + slice for O(n) page building (not O(n²) splice)
 - bucketList is a compact object `{bucketId: bucket}` (not a sparse array) for efficient serialization
 - Reducer uses custom `deepMerge` — returns new object, never mutates state
-- Deploy goes to `master` branch via `gh-pages -d dist -b master`
+- Deploy goes to `gh-pages` branch via `gh-pages -d dist -b gh-pages`
